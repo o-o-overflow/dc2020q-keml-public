@@ -1,0 +1,25 @@
+#!/bin/sh
+
+#exec 2>/dev/null
+
+echo "Spawning the VM..."
+
+exec timeout -k1 120 stdbuf -i0 -o0 -e0 \
+qemu-system-x86_64 \
+	-cpu qemu64,-smep,-smap \
+	-kernel bzImage \
+	-initrd initramfs.cpio.gz \
+	-nographic \
+	-append "root=/dev/ram rw console=ttyS0 oops=panic loglevel=2 panic=1 console=ttyS0" \
+	-monitor none \
+        -no-reboot \
+        -nodefaults -snapshot \
+        -chardev stdio,id=char0,mux=off,signal=off -serial chardev:char0 \
+        -sandbox on,obsolete=deny,elevateprivileges=deny,spawn=deny,resourcecontrol=deny \
+        -m 64M
+
+# -chroot /srv
+# -runas nobody
+# -sandbox on
+
+# -name -uuid -pidfile

@@ -1,0 +1,4 @@
+#!/bin/bash
+PORT=5000
+MAXCONN=50 # sane or too small?
+exec socat -t5 tcp-l:$PORT,reuseaddr,fork,max-children=$MAXCONN exec:./wrapper
